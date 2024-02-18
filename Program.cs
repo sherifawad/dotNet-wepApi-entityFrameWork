@@ -1,3 +1,6 @@
+global using dotNet_wepApi_entityFrameWork.Model;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
