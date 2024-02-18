@@ -1,0 +1,6 @@
+@dotNet_wepApi_entityFrameWork_HostAddress = http://localhost:5005
+
+GET {{dotNet_wepApi_entityFrameWork_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
