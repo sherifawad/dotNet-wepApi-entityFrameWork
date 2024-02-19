@@ -11,7 +11,7 @@ namespace dotNet_wepApi_entityFrameWork.Dtos
         public int Code { get; set; }
         public required string Name { get; set; }
         public int? PositionCode { get; set; }
-        public virtual Position? Position { get; set; }
+        public Position? Position { get; set; }
         public required SalaryStatus SalaryStatus { get; set; }
         public DateTime HiringDate { get; set; }
     }

@@ -9,7 +9,5 @@ namespace dotNet_wepApi_entityFrameWork.Model
     {
         public int Code { get; set; }
         public required string Name { get; set; }
-
-        public virtual ICollection<Employee>? Employees { get; set; }
     }
 }

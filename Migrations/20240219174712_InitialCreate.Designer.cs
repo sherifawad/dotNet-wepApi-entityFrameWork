@@ -12,7 +12,7 @@ using dotNet_wepApi_entityFrameWork.Data;
 namespace dotNet_wepApi_entityFrameWork.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240219153249_InitialCreate")]
+    [Migration("20240219174712_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

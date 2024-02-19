@@ -14,10 +14,7 @@ namespace dotNet_wepApi_entityFrameWork.Data.Config
             builder.HasKey(e => e.Code);
             builder.Property(e => e.Code).ValueGeneratedNever();
             builder.HasIndex(e => e.PositionCode);
-            builder
-                .HasOne<Position>(e => e.Position)
-                .WithMany(p => p.Employees)
-                .HasForeignKey(e => e.PositionCode);
+            builder.HasOne<Position>(e => e.Position).WithMany().HasForeignKey(e => e.PositionCode);
         }
     }
 }

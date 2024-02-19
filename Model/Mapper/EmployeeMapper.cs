@@ -6,12 +6,12 @@ using Riok.Mapperly.Abstractions;
 
 namespace dotNet_wepApi_entityFrameWork.Model.Mapper
 {
-
     [Mapper]
-    public partial class EmployeeMapper
+    public static partial class EmployeeMapper
     {
-        // [MapProperty(nameof(Person.Id), nameof(PersonDto.PersonId))] // Map property with a different name in the target type 
-        public partial EmployeeDTO EmployeeToEmployeeDTO(Employee employee);
-        public partial Employee EmployeeDTOEmployee(EmployeeDTO employeeDTO);
+        // [MapProperty(nameof(Person.Id), nameof(PersonDto.PersonId))] // Map property with a different name in the target type
+        public static partial EmployeeDTO EmployeeToEmployeeDTO(Employee employee);
+
+        public static partial Employee EmployeeDTOEmployee(EmployeeDTO employeeDTO);
     }
 }
