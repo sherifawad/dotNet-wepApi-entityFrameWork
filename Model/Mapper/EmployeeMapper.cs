@@ -12,6 +12,6 @@ namespace dotNet_wepApi_entityFrameWork.Model.Mapper
     {
         // [MapProperty(nameof(Person.Id), nameof(PersonDto.PersonId))] // Map property with a different name in the target type 
         public partial EmployeeDTO EmployeeToEmployeeDTO(Employee employee);
-        public partial Employee EmployeeDTOEmployee(Employee employeeDTO);
+        public partial Employee EmployeeDTOEmployee(EmployeeDTO employeeDTO);
     }
 }

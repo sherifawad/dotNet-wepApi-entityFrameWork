@@ -7,7 +7,9 @@ namespace dotNet_wepApi_entityFrameWork.Model
 {
     public class Position
     {
-        public int PositionCode { get; set; }
-        public required string PositionName { get; set; }
+        public int Code { get; set; }
+        public required string Name { get; set; }
+
+        public virtual ICollection<Employee>? Employees { get; set; }
     }
 }
