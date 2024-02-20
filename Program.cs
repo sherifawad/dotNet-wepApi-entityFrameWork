@@ -1,21 +1,25 @@
-global using dotNet_wepApi_entityFrameWork.Model;
 global using dotNet_wepApi_entityFrameWork.Dtos;
-using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
+global using dotNet_wepApi_entityFrameWork.Model;
 using dotNet_wepApi_entityFrameWork.Data;
+using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
+using dotNet_wepApi_entityFrameWork.Services.PositionService;
 using Microsoft.EntityFrameworkCore;
-;
 
+;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 var app = builder.Build();
 
@@ -24,8 +28,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-
 }
 
 using var scope = app.Services.CreateScope();

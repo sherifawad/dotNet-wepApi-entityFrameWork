@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using dotNet_wepApi_entityFrameWork.Data;
-using dotNet_wepApi_entityFrameWork.Model.Mapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
@@ -15,10 +15,8 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             var serviceResponse = new ServiceResponse<EmployeeDTO>();
             try
             {
-                var employee = EmployeeMapper.EmployeeDTOEmployee(newEmployee);
-                var duplicateCode = await dataContext.Employees.FirstOrDefaultAsync(e =>
-                    e.Code == employee.Code
-                );
+                var employee = newEmployee.ToEmployee();
+                var duplicateCode = await dataContext.Employees.FindAsync(employee.Code);
                 if (employee.Code == 0)
                 {
                     throw new Exception("Invalid Code");
@@ -40,7 +38,17 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                     .Employees.Include(e => e.Position)
                     .Where(e => e.Code == employee.Code)
                     .SingleOrDefaultAsync();
-                serviceResponse.Data = EmployeeMapper.EmployeeToEmployeeDTO(result!);
+
+                if (result is null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Failed To Create";
+                }
+                else
+                {
+                    serviceResponse.Data = result.ToEmployeeDto();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -56,15 +64,22 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             try
             {
                 var employee =
-                    await dataContext.Employees.FirstOrDefaultAsync(e => e.Code == code)
+                    await dataContext.Employees.FindAsync(code)
                     ?? throw new Exception($"employee not found.");
                 dataContext.Employees.Remove(employee);
 
                 await dataContext.SaveChangesAsync();
-                var result = await dataContext.Employees.FirstOrDefaultAsync(e =>
-                    e.Code == employee.Code
-                );
-                serviceResponse.Data = EmployeeMapper.EmployeeToEmployeeDTO(result!);
+                var result = await dataContext.Employees.FindAsync(employee.Code);
+                if (result is null)
+                {
+                    serviceResponse.Data = employee.ToEmployeeDto();
+                    serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Failed To Delete";
+                }
             }
             catch (Exception ex)
             {
@@ -81,10 +96,9 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             {
                 var employees = await dataContext.Employees.Include(e => e.Position).ToListAsync();
 
-                var result = employees
-                    .Select(e => EmployeeMapper.EmployeeToEmployeeDTO(e))
-                    .ToList();
+                var result = employees.Select(e => e.ToEmployeeDto()).ToList();
                 serviceResponse.Data = result;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -104,7 +118,8 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                         .Employees.Where(e => e.Code == code)
                         .Include(e => e.Position)
                         .SingleOrDefaultAsync() ?? throw new Exception($"employee not found.");
-                serviceResponse.Data = EmployeeMapper.EmployeeToEmployeeDTO(employee);
+                serviceResponse.Data = employee.ToEmployeeDto();
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -121,6 +136,7 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             {
                 var result = await dataContext.Employees.MaxAsync(e => e.Code);
                 serviceResponse.Data = result;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -138,11 +154,10 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             var serviceResponse = new ServiceResponse<EmployeeDTO>();
             try
             {
-                var employeeToUpdate = EmployeeMapper.EmployeeDTOEmployee(updatedEmployee);
+                var employeeToUpdate = updatedEmployee.ToEmployee();
                 var employee =
-                    await dataContext.Employees.FirstOrDefaultAsync(e =>
-                        e.Code == employeeToUpdate.Code
-                    ) ?? throw new Exception("employee not found.");
+                    await dataContext.Employees.FindAsync(code)
+                    ?? throw new Exception("employee not found.");
 
                 if (employeeToUpdate.Code == 0)
                 {
@@ -151,27 +166,27 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                 if (employeeToUpdate.Code != code)
                 {
                     var duplicateCode =
-                        await dataContext.Employees.FirstOrDefaultAsync(e => e.Code == code)
-                        ?? throw new Exception("Code Duplicate");
+                        await dataContext.Employees.FirstOrDefaultAsync(e =>
+                            e.Code == employeeToUpdate.Code
+                        ) ?? throw new Exception("Code Duplicate");
                 }
 
                 if (employeeToUpdate.PositionCode is not null)
                 {
                     var position =
-                        await dataContext.Positions.FirstOrDefaultAsync(p =>
-                            p.Code == employeeToUpdate.PositionCode
-                        ) ?? throw new Exception("Position not Found");
+                        await dataContext.Positions.FindAsync(employeeToUpdate.PositionCode)
+                        ?? throw new Exception("Position not Found");
+                    employee.PositionCode = employeeToUpdate.PositionCode;
                 }
 
                 employee.Code = employeeToUpdate.Code;
                 employee.Name = employeeToUpdate.Name;
                 employee.SalaryStatus = employeeToUpdate.SalaryStatus;
                 employee.HiringDate = employeeToUpdate.HiringDate;
-                employee.PositionCode = employeeToUpdate.PositionCode;
-                await dataContext.Employees.AddAsync(employee);
                 await dataContext.SaveChangesAsync();
 
-                serviceResponse.Data = EmployeeMapper.EmployeeToEmployeeDTO(employee!);
+                serviceResponse.Data = employee.ToEmployeeDto();
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {

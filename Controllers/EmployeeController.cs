@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
@@ -53,12 +54,13 @@ namespace dotNet_wepApi_entityFrameWork.Controllers
             return StatusCode(StatusCodes.Status201Created, result);
         }
 
-        [HttpPut]
+        [HttpPut("{code}")]
         public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> UpdateEmployee(
             int code,
             EmployeeDTO updatedEmployee
         )
         {
+            Debug.Write(updatedEmployee);
             var result = await employeeService.UpdateEmployee(code, updatedEmployee);
             if (result.Data is null)
             {
