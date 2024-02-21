@@ -25,3 +25,9 @@ Finally, Access using Swagger
 ```bash
 http://localhost:5005/swagger/index.html
 ```
+
+Publish Project
+
+```bash
+dotnet publish --property:PublishDir=publish
+```
