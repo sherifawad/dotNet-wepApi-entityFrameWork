@@ -9,6 +9,7 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
     public interface IEmployeeRepository
     {
         Task<List<Employee>> GetAllAsync(QueryObject query);
+        Task<List<Employee>> GetFilteredAsync(RootFilter query);
         Task<Employee?> GetByCodeAsync(int code);
         Task<Employee?> CreateAsync(Employee employeeModel);
         Task<Employee?> UpdateAsync(int code, EmployeeDTO employeeDto);

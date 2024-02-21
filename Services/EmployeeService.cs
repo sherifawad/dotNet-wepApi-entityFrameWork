@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using dotNet_wepApi_entityFrameWork.Data;
 using dotNet_wepApi_entityFrameWork.Helpers;
@@ -172,6 +174,27 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                     serviceResponse.Data = employee.ToEmployeeDto();
                     serviceResponse.Success = true;
                 }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IList<EmployeeDTO>>> GetFilteredEmployees(
+            RootFilter query
+        )
+        {
+            var serviceResponse = new ServiceResponse<IList<EmployeeDTO>>();
+            try
+            {
+                var employees = await repository.GetFilteredAsync(query);
+
+                var result = employees.Select(e => e.ToEmployeeDto()).ToList();
+                serviceResponse.Data = result;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {

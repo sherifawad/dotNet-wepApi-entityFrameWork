@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using Bogus.DataSets;
 using dotNet_wepApi_entityFrameWork.Model;
 using dotNet_wepApi_entityFrameWork.Model.Dtos.Position;
+using Newtonsoft.Json;
 
 namespace dotNet_wepApi_entityFrameWork
 {
     public class Employee
     {
+        [JsonProperty]
         public int Code { get; set; }
         public required string Name { get; set; }
+
         public int? PositionCode { get; set; }
         public Position? Position { get; set; }
         public SalaryStatus SalaryStatus { get; set; } = SalaryStatus.VALID;

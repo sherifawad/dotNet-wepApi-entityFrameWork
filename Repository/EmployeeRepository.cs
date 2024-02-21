@@ -91,6 +91,29 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
                 .FirstOrDefaultAsync(i => i.Code == code);
         }
 
+        public async Task<List<Employee>> GetFilteredAsync(RootFilter query)
+        {
+            if (query.Filters == null || query.Filters.Count < 1)
+            {
+                var employees = dataContext.Employees.Include(e => e.Position).AsQueryable();
+                return await employees.ToListAsync();
+            }
+            else
+            {
+                var filterExpression = CompositeFilter<Employee>.GetFilterExpression(query);
+                if (filterExpression is null)
+                {
+                    var result = dataContext.Employees.Include(e => e.Position).AsQueryable();
+                    return await result.ToListAsync();
+                }
+                var employees = dataContext
+                    .Employees.Where(filterExpression)
+                    .Include(e => e.Position)
+                    .AsQueryable();
+                return await employees.ToListAsync();
+            }
+        }
+
         public async Task<int> GetMaxCodeAsync()
         {
             return await dataContext.Employees.MaxAsync(e => e.Code);

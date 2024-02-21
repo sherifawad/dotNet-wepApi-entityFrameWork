@@ -2,17 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using dotNet_wepApi_entityFrameWork.Helpers;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace dotNet_wepApi_entityFrameWork.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController(IEmployeeService employeeService) : ControllerBase
+    public class EmployeeController(
+        IEmployeeService employeeService,
+        ILogger<EmployeeController> logger
+    ) : ControllerBase
     {
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<EmployeeDTO>>>> Get(
@@ -22,6 +27,25 @@ namespace dotNet_wepApi_entityFrameWork.Controllers.v1
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return Ok(await employeeService.GetAllEmployees(query));
+        }
+
+        [HttpGet("GetAllFilters")]
+        public async Task<ActionResult<ServiceResponse<List<EmployeeDTO>>>> GetAllFilters(
+            [FromQuery] RootFilter filter
+        )
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            // JsonSerializerOptions options =
+            //     new(JsonSerializerDefaults.Web) { WriteIndented = true };
+            var result = HttpContext.Request.Query["filter"];
+            if (string.IsNullOrEmpty(result))
+                return BadRequest("Empty filter");
+            var query = JsonConvert.DeserializeObject<RootFilter>(result);
+            if (query is null)
+                return BadRequest("invalid params filter");
+
+            return Ok(await employeeService.GetFilteredEmployees(query));
         }
 
         [HttpGet("{code:int}")]

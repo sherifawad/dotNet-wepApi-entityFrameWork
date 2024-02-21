@@ -13,7 +13,10 @@ namespace dotNet_wepApi_entityFrameWork.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PositionController(IPositionService positionService) : ControllerBase
+    public class PositionController(
+        IPositionService positionService,
+        ILogger<PositionController> logger
+    ) : ControllerBase
     {
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<PositionDTO>>>> Get(
