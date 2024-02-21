@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using dotNet_wepApi_entityFrameWork.Helpers;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +14,22 @@ namespace dotNet_wepApi_entityFrameWork.Controllers
     public class EmployeeController(IEmployeeService employeeService) : ControllerBase
     {
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<EmployeeDTO>>>> Get()
+        public async Task<ActionResult<ServiceResponse<List<EmployeeDTO>>>> Get(
+            [FromQuery] QueryObject query
+        )
         {
-            return Ok(await employeeService.GetAllEmployees());
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(await employeeService.GetAllEmployees(query));
         }
 
-        [HttpGet("{code}")]
-        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> GetSingle(int code)
+        [HttpGet("{code:int}")]
+        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> GetByCode(
+            [FromRoute] int code
+        )
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await employeeService.GetEmployeeByCode(code);
             if (result.Data is null)
             {
@@ -33,34 +42,50 @@ namespace dotNet_wepApi_entityFrameWork.Controllers
         [HttpGet("GetMaxCode")]
         public async Task<ActionResult<ServiceResponse<int>>> GetMaxCode()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await employeeService.GetMaxCode();
-            if (result.Message != string.Empty)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, result.Message);
-            }
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> AddEmployee(
-            EmployeeDTO newEmployee
+            [FromBody] EmployeeDTO newEmployee
         )
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await employeeService.AddEmployee(newEmployee);
             if (result.Data is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, result.Message);
             }
-            return StatusCode(StatusCodes.Status201Created, result);
+            return CreatedAtAction(nameof(GetByCode), result);
         }
 
-        [HttpPut("{code}")]
-        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> UpdateEmployee(
-            int code,
-            EmployeeDTO updatedEmployee
+        [HttpPost("DeleteMany")]
+        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> DeleteMany(
+            [FromBody] IEnumerable<int> codesList
         )
         {
-            Debug.Write(updatedEmployee);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await employeeService.DeleteMany(codesList);
+            if (result.Data is null)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut("{code:int}")]
+        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> UpdateEmployee(
+            [FromRoute] int code,
+            [FromBody] EmployeeDTO updatedEmployee
+        )
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await employeeService.UpdateEmployee(code, updatedEmployee);
             if (result.Data is null)
             {
@@ -69,9 +94,13 @@ namespace dotNet_wepApi_entityFrameWork.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{code}")]
-        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> DeleteEmployee(int code)
+        [HttpDelete("{code:int}")]
+        public async Task<ActionResult<ServiceResponse<EmployeeDTO>>> DeleteEmployee(
+            [FromRoute] int code
+        )
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var response = await employeeService.DeleteEmployee(code);
             if (response.Data is null)
             {

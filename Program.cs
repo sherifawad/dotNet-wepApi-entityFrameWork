@@ -1,6 +1,8 @@
 global using dotNet_wepApi_entityFrameWork.Dtos;
 global using dotNet_wepApi_entityFrameWork.Model;
 using dotNet_wepApi_entityFrameWork.Data;
+using dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository;
+using dotNet_wepApi_entityFrameWork.Repository.PositionRepository;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using dotNet_wepApi_entityFrameWork.Services.PositionService;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 var app = builder.Build();
@@ -42,6 +46,14 @@ context.Database.EnsureCreated();
 DbInitializer.Initialize(context);
 
 app.UseHttpsRedirection();
+
+// app.UseCors(x =>
+//     x.AllowAnyMethod()
+//         .AllowAnyHeader()
+//         .AllowCredentials()
+//         //.WithOrigins("https://localhost:3000))
+//         .SetIsOriginAllowed(origin => true)
+// );
 
 app.UseAuthorization();
 

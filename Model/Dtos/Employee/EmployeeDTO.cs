@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using dotNet_wepApi_entityFrameWork.Model;
@@ -10,10 +11,14 @@ namespace dotNet_wepApi_entityFrameWork.Dtos
     public class EmployeeDTO
     {
         public int Code { get; set; }
-        public required string Name { get; set; }
+
+        [Required]
+        [MinLength(5, ErrorMessage = "Name must be 5 characters")]
+        public string Name { get; set; } = string.Empty;
         public int? PositionCode { get; set; }
         public PositionDTO? Position { get; set; }
         public required SalaryStatus SalaryStatus { get; set; }
+
         public DateTime HiringDate { get; set; }
 
         public Employee ToEmployee()
