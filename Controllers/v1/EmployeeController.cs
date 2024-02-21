@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using dotNet_wepApi_entityFrameWork.Helpers;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using Microsoft.AspNetCore.Mvc;
 
-namespace dotNet_wepApi_entityFrameWork.Controllers
+namespace dotNet_wepApi_entityFrameWork.Controllers.v1
 {
     [ApiController]
     [Route("api/[controller]")]
