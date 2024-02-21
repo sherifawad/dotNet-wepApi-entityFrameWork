@@ -119,7 +119,7 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                 if (employee is null)
                 {
                     serviceResponse.Success = false;
-                    serviceResponse.Message = "Failed To Delete";
+                    serviceResponse.Message = "Employee Not Found";
                 }
                 else
                 {
@@ -165,7 +165,7 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                 if (employee is null)
                 {
                     serviceResponse.Success = false;
-                    serviceResponse.Message = "Failed To Delete";
+                    serviceResponse.Message = "Failed To Update";
                 }
                 else
                 {
