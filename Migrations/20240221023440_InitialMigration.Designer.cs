@@ -2,9 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using dotNet_wepApi_entityFrameWork.Data;
 
 #nullable disable
@@ -12,8 +12,8 @@ using dotNet_wepApi_entityFrameWork.Data;
 namespace dotNet_wepApi_entityFrameWork.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240219174712_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240221023440_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,27 +21,27 @@ namespace dotNet_wepApi_entityFrameWork.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("dotNet_wepApi_entityFrameWork.Employee", b =>
                 {
                     b.Property<int>("Code")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("HiringDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("PositionCode")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("SalaryStatus")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Code");
 
@@ -54,13 +54,13 @@ namespace dotNet_wepApi_entityFrameWork.Migrations
                 {
                     b.Property<int>("Code")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Code"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Code");
 
@@ -95,15 +95,10 @@ namespace dotNet_wepApi_entityFrameWork.Migrations
             modelBuilder.Entity("dotNet_wepApi_entityFrameWork.Employee", b =>
                 {
                     b.HasOne("dotNet_wepApi_entityFrameWork.Model.Position", "Position")
-                        .WithMany("Employees")
+                        .WithMany()
                         .HasForeignKey("PositionCode");
 
                     b.Navigation("Position");
-                });
-
-            modelBuilder.Entity("dotNet_wepApi_entityFrameWork.Model.Position", b =>
-                {
-                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

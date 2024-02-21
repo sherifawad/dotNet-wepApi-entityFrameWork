@@ -16,7 +16,7 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
                 e.Code == employeeModel.Code
             );
 
-            if (existingEmployee == null)
+            if (existingEmployee != null)
             {
                 return null;
             }

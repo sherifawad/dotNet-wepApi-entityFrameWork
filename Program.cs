@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddControllers();
 
@@ -38,10 +38,11 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
 var context = services.GetRequiredService<DataContext>();
-if (app.Environment.IsDevelopment())
-{
-    context.Database.EnsureDeleted();
-}
+
+// if (app.Environment.IsDevelopment())
+// {
+//     context.Database.EnsureDeleted();
+// }
 context.Database.EnsureCreated();
 DbInitializer.Initialize(context);
 
