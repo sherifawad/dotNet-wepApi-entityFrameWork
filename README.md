@@ -59,3 +59,16 @@ Publish Project
 ```bash
 dotnet publish --property:PublishDir=publish
 ```
+
+## Features
+
+- Api versioning
+- Easy data View and sort
+- Can be used either by MYSQl or Postgres after adding date time conversion
+- Implementing Open Data protocol
+- Use generic expressions
+
+```bash
+
+http://localhost:5005/api/Employee/GetAllFilters?filter={"filters":[{"field":"Name","operator":"contains","value":"sherif"},{"operator":"eq","value":"1","field":"code"}],"logic":"or"}
+```
