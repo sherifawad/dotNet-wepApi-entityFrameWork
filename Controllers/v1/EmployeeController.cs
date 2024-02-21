@@ -91,7 +91,7 @@ namespace dotNet_wepApi_entityFrameWork.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, result.Message);
             }
-            return CreatedAtAction(nameof(GetByCode), result);
+            return Ok(result);
         }
 
         [HttpPost("DeleteMany")]

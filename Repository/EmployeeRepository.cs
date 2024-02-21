@@ -12,6 +12,10 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
     {
         public async Task<Employee?> CreateAsync(Employee employeeModel)
         {
+            if (employeeModel.Code < 1)
+            {
+                return null;
+            }
             var existingEmployee = await dataContext.Employees.FirstOrDefaultAsync(e =>
                 e.Code == employeeModel.Code
             );
@@ -67,7 +71,10 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
 
         public async Task<List<Employee>> GetAllAsync(QueryObject? query)
         {
-            var employees = dataContext.Employees.Include(e => e.Position).AsQueryable();
+            var employees = dataContext
+                .Employees.Include(e => e.Position)
+                .AsQueryable()
+                .OrderBy(s => s.Code);
             if (query is null)
             {
                 return await employees.ToListAsync();
