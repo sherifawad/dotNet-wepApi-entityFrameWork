@@ -65,9 +65,13 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
             return dataContext.Employees.AnyAsync(e => e.Code == code);
         }
 
-        public async Task<List<Employee>> GetAllAsync(QueryObject query)
+        public async Task<List<Employee>> GetAllAsync(QueryObject? query)
         {
             var employees = dataContext.Employees.Include(e => e.Position).AsQueryable();
+            if (query is null)
+            {
+                return await employees.ToListAsync();
+            }
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
@@ -82,6 +86,11 @@ namespace dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
             return await employees.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+        }
+
+        public IQueryable<Employee> GetAllQueryableAsync()
+        {
+            return dataContext.Employees.Include(e => e.Position).AsQueryable();
         }
 
         public async Task<Employee?> GetByCodeAsync(int code)

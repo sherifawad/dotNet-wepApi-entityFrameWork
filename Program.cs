@@ -7,6 +7,7 @@ using dotNet_wepApi_entityFrameWork.Repository.PositionRepository;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using dotNet_wepApi_entityFrameWork.Services.PositionService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 
 ;
@@ -22,7 +23,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 // builder.Services.AddDbContext<DataContext>(options =>
 //     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 // );
-builder.Services.AddControllers();
+builder
+    .Services.AddControllers()
+    .AddOData(options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null));
 builder
     .Services.AddApiVersioning(o =>
     {

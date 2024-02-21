@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using dotNet_wepApi_entityFrameWork.Data;
 using dotNet_wepApi_entityFrameWork.Helpers;
 using dotNet_wepApi_entityFrameWork.Repository.EmployeeRepository;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
@@ -93,7 +94,7 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IList<EmployeeDTO>>> GetAllEmployees(QueryObject query)
+        public async Task<ServiceResponse<IList<EmployeeDTO>>> GetAllEmployees(QueryObject? query)
         {
             var serviceResponse = new ServiceResponse<IList<EmployeeDTO>>();
             try
@@ -193,6 +194,23 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
                 var employees = await repository.GetFilteredAsync(query);
 
                 var result = employees.Select(e => e.ToEmployeeDto()).ToList();
+                serviceResponse.Data = result;
+                serviceResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            return serviceResponse;
+        }
+
+        public ServiceResponse<IQueryable<Employee>> GetAllQueryableAsync()
+        {
+            var serviceResponse = new ServiceResponse<IQueryable<Employee>>();
+            try
+            {
+                var result = repository.GetAllQueryableAsync();
                 serviceResponse.Data = result;
                 serviceResponse.Success = true;
             }

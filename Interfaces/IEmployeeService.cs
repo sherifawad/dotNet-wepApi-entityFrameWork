@@ -8,7 +8,9 @@ namespace dotNet_wepApi_entityFrameWork.Services.EmployeeService
 {
     public interface IEmployeeService
     {
-        Task<ServiceResponse<IList<EmployeeDTO>>> GetAllEmployees(QueryObject query);
+        Task<ServiceResponse<IList<EmployeeDTO>>> GetAllEmployees(QueryObject? query);
+        ServiceResponse<IQueryable<Employee>> GetAllQueryableAsync();
+
         Task<ServiceResponse<IList<EmployeeDTO>>> GetFilteredEmployees(RootFilter query);
         Task<ServiceResponse<EmployeeDTO?>> GetEmployeeByCode(int code);
         Task<ServiceResponse<EmployeeDTO?>> AddEmployee(EmployeeDTO newEmployee);

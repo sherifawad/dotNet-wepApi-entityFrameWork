@@ -8,6 +8,7 @@ using Asp.Versioning;
 using dotNet_wepApi_entityFrameWork.Helpers;
 using dotNet_wepApi_entityFrameWork.Services.EmployeeService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Newtonsoft.Json;
 
 namespace dotNet_wepApi_entityFrameWork.Controllers.v1
@@ -20,6 +21,7 @@ namespace dotNet_wepApi_entityFrameWork.Controllers.v1
     ) : ControllerBase
     {
         [HttpGet("GetAll")]
+        [EnableQuery]
         public async Task<ActionResult<ServiceResponse<List<EmployeeDTO>>>> Get(
             [FromQuery] QueryObject query
         )
@@ -42,8 +44,12 @@ namespace dotNet_wepApi_entityFrameWork.Controllers.v1
             if (string.IsNullOrEmpty(result))
                 return BadRequest("Empty filter");
             var query = JsonConvert.DeserializeObject<RootFilter>(result);
+
             if (query is null)
+            {
+                logger.LogInformation($"Generic Filter BadRequest input: {query}");
                 return BadRequest("invalid params filter");
+            }
 
             return Ok(await employeeService.GetFilteredEmployees(query));
         }
