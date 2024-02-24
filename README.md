@@ -66,7 +66,7 @@ dotnet publish --property:PublishDir=publish
 - Easy data View and sort
 - Can be used either by MYSQl or Postgres after adding date time conversion
 - Implementing Open Data protocol
-- Use generic expressions
+- Use generic expressions: doesn't work with swagger, try with some other options like postman
 
 ```bash
 
